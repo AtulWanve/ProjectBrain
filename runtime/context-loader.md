@@ -27,3 +27,12 @@ Each `AffectedNode` from Graph Retriever resolves to a memory file as follows:
 
 - Only nodes in `AffectedNode[]` are resolved. No additional memory files are loaded.
 - Assembled context concatenates loaded file contents, each prefixed with its path as a header.
+
+### Empty-Graph Fallback Mode
+
+Fallback is entered only when `graphEmpty === true` (the explicit signal from Graph Retriever). It is **not** triggered by an empty `AffectedNode[]` from a non-empty graph.
+
+1. Load **all** `memory/*.md` files as a fallback.
+2. Apply the same path-safety enforcement as normal resolution: normalize each resolved path and verify it stays under `memory/`; throw `EscapeError` immediately and return no context otherwise.
+3. Silent skip any `memory/*.md` that fails to load due to missing or unreadable file — I/O errors only; EscapeError and other non-I/O failures are never swallowed.
+4. Fallback mode is only entered when `graphEmpty === true` — it is not a general "load everything" override.
