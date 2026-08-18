@@ -1,6 +1,12 @@
+---
+title: Active Tasks
+tags: [tasks, active, tracking]
+aliases: [Active Tasks]
+---
+
 # Active Tasks
 
-Tracks currently in-progress work.
+Tracks currently in-progress work. See also [[tasks/completed|Completed Tasks]], [[tasks/failed|Failed Tasks]], and [[tasks/changelog|Changelog]].
 
 ## Format
 
@@ -18,3 +24,5 @@ Literal backslash characters (`\`) must be escaped as `\\`. Literal pipe charact
 ### Empty State
 
 When there are no active tasks, the file contains the literal text `No active tasks.` with no preceding `-` or pipe separators. This is non-record content and **must** be ignored by parsers rather than treated as a task entry.
+
+> [!info] Task entries follow the schema defined in [[templates/task-entry-template|Task Entry Template]]. The [[runtime/orchestrator|Orchestrator]] updates this file as tasks progress through the pipeline.

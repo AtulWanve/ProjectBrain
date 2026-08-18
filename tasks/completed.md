@@ -1,6 +1,12 @@
+---
+title: Completed Tasks
+tags: [tasks, completed, history]
+aliases: [Completed Tasks]
+---
+
 # Completed Tasks
 
-Records all successfully completed engineering tasks.
+Records all successfully completed engineering tasks. See also [[tasks/active|Active Tasks]], [[tasks/failed|Failed Tasks]], and [[tasks/changelog|Changelog]].
 
 ## Format
 
@@ -22,3 +28,5 @@ Records all successfully completed engineering tasks.
 ### Empty State
 
 `No completed tasks yet.` is the canonical empty-state marker. It is non-record content (no leading `-` or pipe separators) and **must** be ignored by parsers rather than treated as a task entry.
+
+> [!info] Tasks are marked completed when they pass the acceptance gate in the [[runtime/confidence-engine|Confidence Engine]]. The score is the `overallScore` from the [[runtime/review-engine|Review Engine]].
