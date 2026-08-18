@@ -1,8 +1,14 @@
+---
+title: Performance Review
+tags: [review, performance, optimization]
+aliases: [Performance Review]
+---
+
 # Performance Review
 
 ## Scope
 
-Evaluates performance implications of the implementation.
+Evaluates performance implications of the implementation. See [[standards/performance|Performance Standards]] for the guidelines this review checks against.
 
 ## Checklist
 
@@ -31,3 +37,5 @@ Threshold: score < 60 sets `Blocking: true`; score >= 60 sets `Blocking: false`.
 - Issues found
 - Recommendations
 - Blocking: boolean (derived: `true` when score is not null and score < 60; `false` when score >= 60 or score is `null`)
+
+> [!info] This review contributes to the "Performance" dimension in the [[runtime/review-engine|Review Engine]]'s eight canonical categories.

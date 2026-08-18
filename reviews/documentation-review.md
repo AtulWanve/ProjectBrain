@@ -1,8 +1,14 @@
+---
+title: Documentation Review
+tags: [review, documentation, evaluation]
+aliases: [Documentation Review]
+---
+
 # Documentation Review
 
 ## Scope
 
-Evaluates whether the implementation is properly documented.
+Evaluates whether the implementation is properly documented. See [[standards/documentation|Documentation Standards]] for the conventions this review checks against.
 
 ## Checklist
 
@@ -41,3 +47,5 @@ N/A (not applicable) items are excluded from the score denominator. If all items
 - Missing documentation
 - Recommendations
 - Blocking: boolean (`true` when score < 50, `false` otherwise or when score is `null`)
+
+> [!info] Results from all review types are aggregated by the [[runtime/review-engine|Review Engine]] as part of the eight canonical dimensions.

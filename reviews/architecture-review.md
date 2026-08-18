@@ -1,8 +1,14 @@
+---
+title: Architecture Review
+tags: [review, architecture, design, evaluation]
+aliases: [Architecture Review]
+---
+
 # Architecture Review
 
 ## Scope
 
-Evaluates whether the implementation aligns with the existing project architecture.
+Evaluates whether the implementation aligns with the existing project architecture. One of five review types (see [[reviews/code-quality|Code Quality]], [[reviews/documentation-review|Documentation]], [[reviews/performance-review|Performance]], [[reviews/security-review|Security]]).
 
 ## Checklist
 
@@ -41,3 +47,5 @@ Threshold: score < 60 sets `Blocking: true`. Additionally, any single issue clas
 - Issues found (each classified as Critical, High, Medium, or Low)
 - Recommendations
 - Blocking: boolean (true when score < 60 or any Critical issue is present)
+
+> [!info] Results from this review feed into the [[runtime/review-engine|Review Engine]] as part of the eight canonical review dimensions.
