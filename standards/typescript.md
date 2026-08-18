@@ -1,3 +1,9 @@
+---
+title: TypeScript Standards
+tags: [standards, typescript, typing, types]
+aliases: [TypeScript]
+---
+
 # TypeScript Standards
 
 ## Type Safety
@@ -19,6 +25,8 @@
 
 - Use ES module syntax
 - Prefer named exports over default exports
-  - **Exception:** Next.js App Router entry points (`page.tsx`, `layout.tsx`, `loading.tsx`, `error.tsx`, `not-found.tsx`, `template.tsx`) **must** use default exports as required by the framework
+  - **Exception:** [[standards/nextjs|Next.js]] App Router entry points (`page.tsx`, `layout.tsx`, `loading.tsx`, `error.tsx`, `not-found.tsx`, `template.tsx`) **must** use default exports as required by the framework
 - Group imports: externals → internals → relative
 - Avoid barrel files (index.ts re-exports) for deep module trees
+
+> [!seealso] Also see [[standards/naming|Naming Standards]] for file and directory naming conventions.

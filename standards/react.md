@@ -1,3 +1,9 @@
+---
+title: React Standards
+tags: [standards, react, components, hooks]
+aliases: [React, React Conventions]
+---
+
 # React Standards
 
 ## Component Structure
@@ -21,3 +27,5 @@
 - Memoize callbacks with `useCallback` when passed to memoized children
 - Use `React.memo` for pure components that re-render frequently
 - Lazy load routes and heavy components
+
+> [!seealso] Also see [[standards/performance|Performance Standards]] and [[reviews/code-quality|Code Quality Review]].

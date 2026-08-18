@@ -1,3 +1,9 @@
+---
+title: Security Standards
+tags: [standards, security, authentication, validation]
+aliases: [Security]
+---
+
 # Security Standards
 
 ## Input Validation
@@ -39,3 +45,5 @@
 - Regularly audit dependencies for CVEs
 - Pin major versions; use lockfiles
 - Avoid eval, exec, or dynamic code generation with user input
+
+> [!seealso] See [[reviews/security-review|Security Review]] for the review checklist and [[standards/nextjs|Next.js Standards]] for Server Action CSRF context.
