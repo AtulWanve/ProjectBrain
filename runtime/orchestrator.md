@@ -1,31 +1,37 @@
+---
+title: Orchestrator
+tags: [runtime, orchestrator, pipeline, core]
+aliases: [Pipeline Orchestrator, Phase 8]
+---
+
 # Orchestrator (Phase 8)
 
-Every user prompt follows the same deterministic pipeline. No stage may be skipped.
+Every user prompt follows the same deterministic pipeline. No stage may be skipped. See also [[system/workflow]] for the high-level lifecycle and [[runtime/prompt-lifecycle]] for the end-to-end prompt journey.
 
 ## Pipeline
 
 ```
 User Prompt
 ↓
-Task Classification
+Task Classification    ← [[runtime/task-classifier|Task Classifier]]
 ↓
-Graph Retrieval
+Graph Retrieval        ← [[runtime/graph-retriever|Graph Retriever]]
 ↓
-Context Loading
+Context Loading        ← [[runtime/context-loader|Context Loader]]
 ↓
-Planning
+Planning               ← [[system/planner]]
 ↓
-Execution
+Execution              ← [[runtime/execution-engine|Execution Engine]]
 ↓
-Static Validation
-└── Failure → return to Planning (no stage skip; re-execute from Planning forward)
+Static Validation      ← [[runtime/static-validator|Static Validator]]
+└── Failure → return to Execution (no stage skip; re-execute from Execution forward)
 ↓ (pass)
-AI Review
+AI Review              ← [[runtime/review-engine|Review Engine]]
 ↓
-Confidence Scoring
+Confidence Scoring     ← [[runtime/confidence-engine|Confidence Engine]]
 ↓
 accepted === true ?
-( !blocking && overallScore >= 90 )
+( !blocking && (overallScore >= 90 || reviewRequired === false) )
 ├── No
 │   ↓
 │   Retry count < max (default 3) ?
@@ -34,12 +40,12 @@ accepted === true ?
 │
 └── Yes
     ↓
-    Knowledge Synchronization
+    Knowledge Sync     ← [[runtime/memory-updater|Memory Updater]] + [[runtime/graph-updater|Graph Updater]]
     ↓
     Response
 ```
 
-Note: Returning to an earlier stage on validation failure or low confidence does **not** violate the no-stage-skipping rule — every stage is visited in order on each full pass through the pipeline. The re-execution path retraces all stages from the re-entry point forward.
+> [!note] Returning to an earlier stage on validation failure or low confidence does **not** violate the no-stage-skipping rule — every stage is visited in order on each full pass through the pipeline. The re-execution path retraces all stages from the re-entry point forward.
 
 ## Responsibilities
 

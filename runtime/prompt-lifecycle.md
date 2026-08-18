@@ -1,42 +1,48 @@
+---
+title: Prompt Lifecycle
+tags: [runtime, lifecycle, pipeline, end-to-end]
+aliases: [PromptLifecycle, Phase 18]
+---
+
 # Prompt Lifecycle (Phase 18)
 
-The complete end-to-end lifecycle of a user prompt.
+The complete end-to-end lifecycle of a user prompt. See also [[runtime/orchestrator]] for the deterministic pipeline and [[system/workflow]] for the high-level view.
 
 ## Full Pipeline
 
 ```
 Receive Prompt
 ↓
-Task Classification
+Task Classification      ← [[runtime/task-classifier|Task Classifier]]
 ↓
-Graph Retrieval
+Graph Retrieval          ← [[runtime/graph-retriever|Graph Retriever]]
 ↓
-Load Relevant Memory
+Load Relevant Memory     ← [[runtime/context-loader|Context Loader]]
 ↓
-Planning
+Planning                 ← [[system/planner]]
 ↓
-Execution
+Execution                ← [[runtime/execution-engine|Execution Engine]]
 ↓
-Static Validation
+Static Validation        ← [[runtime/static-validator|Static Validator]]
 ↓
-AI Review
+AI Review                ← [[runtime/review-engine|Review Engine]]
 ↓
-Confidence Scoring
+Confidence Scoring       ← [[runtime/confidence-engine|Confidence Engine]]
 ↓
-!blocking && overallScore >= 90 ?
-├── No (blocking or score < 90)
+!blocking && (overallScore >= 90 || reviewRequired === false) ?
+├── No
 │   ↓
 │   Retry count < max (default 3) ?
-│   ├── Yes → increment retry count, Improve → Review Again
+│   ├── Yes → increment retry count, return to Execution with improvement instructions
 │   └── No  → Escalate to human review, return escalation response (no further retries)
 │
 └── Yes
     ↓
-    Incremental Memory Update
+    Incremental Memory Update   ← [[runtime/memory-updater|Memory Updater]]
     ↓
-    Incremental Graph Update
+    Incremental Graph Update    ← [[runtime/graph-updater|Graph Updater]]
     ↓
-    Append Task History
+    Append Task History         → updated in [[tasks/completed]] / [[tasks/failed]]
     ↓
     Return Final Response
 ```
@@ -48,3 +54,5 @@ Confidence Scoring
 - Failures at any stage return actionable feedback
 - Knowledge grows incrementally with every completed task
 - Token consumption is minimized by early validation
+
+> [!info] This lifecycle is enforced by the [[runtime/orchestrator|Orchestrator]]. Each runtime component runs in strict order — no stage-skipping is permitted even on retries.

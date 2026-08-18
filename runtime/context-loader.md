@@ -1,12 +1,18 @@
+---
+title: Context Loader
+tags: [runtime, context, memory, loading]
+aliases: [ContextLoader]
+---
+
 # Context Loader
 
-Loads only the relevant memory files required for the current task.
+Loads only the relevant memory files required for the current task. Receives `AffectedNode[]` from [[runtime/graph-retriever|Graph Retriever]] and loads from `memory/` files.
 
 ## Node-to-Memory Mapping Policy
 
 ### Resolution Rules
 
-Each `AffectedNode` from Graph Retriever resolves to a memory file as follows:
+Each `AffectedNode` from [[runtime/graph-retriever|Graph Retriever]] resolves to a memory file as follows:
 
 1. Strip the `type` prefix from `id` to produce a base name (e.g., `module:auth` → `auth`).
 2. Append `.md` and resolve relative to `memory/` (e.g., `memory/auth.md`).
@@ -30,9 +36,22 @@ Each `AffectedNode` from Graph Retriever resolves to a memory file as follows:
 
 ### Empty-Graph Fallback Mode
 
-Fallback is entered only when `graphEmpty === true` (the explicit signal from Graph Retriever). It is **not** triggered by an empty `AffectedNode[]` from a non-empty graph.
+Fallback is entered only when `graphEmpty === true` (the explicit signal from [[runtime/graph-retriever|Graph Retriever]]). It is **not** triggered by an empty `AffectedNode[]` from a non-empty graph.
 
-1. Load **all** `memory/*.md` files as a fallback.
+1. Load **only `overview.md` and `architecture.md`** as a fallback. (Loading all memory files would overwhelm context tokens).
 2. Apply the same path-safety enforcement as normal resolution: normalize each resolved path and verify it stays under `memory/`; throw `EscapeError` immediately and return no context otherwise.
-3. Silent skip any `memory/*.md` that fails to load due to missing or unreadable file — I/O errors only; EscapeError and other non-I/O failures are never swallowed.
+3. Silent skip any file that fails to load due to missing or unreadable file — I/O errors only; EscapeError and other non-I/O failures are never swallowed.
 4. Fallback mode is only entered when `graphEmpty === true` — it is not a general "load everything" override.
+
+## Multi-Resolution Loading (Blueprint)
+
+Inspired by [PageIndex](https://github.com/VectifyAI/PageIndex) and [ChatIndex](https://github.com/VectifyAI/ChatIndex), the context loader can support **multi-resolution access**:
+
+- **Summary-only**: Load node summaries for broad context (fast, low token cost)
+- **Full content**: Load raw content only when the summary is insufficient
+- **Dynamic resolution**: LLM determines depth needed during retrieval traversal
+- **Session memory**: Use [ChatIndex](https://github.com/VectifyAI/ChatIndex) topic trees for long-running agent conversations — load only relevant branches instead of full history
+
+See [[memory/vectifyai-blueprints]] for the full pattern specification.
+
+> [!tip] Memory files are designed as append-only stubs. See [[standards/documentation|Documentation Standards]] for the 500-line compaction policy.

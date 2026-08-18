@@ -1,6 +1,12 @@
+---
+title: Graph Updater
+tags: [runtime, graph, persistence, versioning]
+aliases: [GraphUpdater]
+---
+
 # Graph Updater
 
-Applies incremental graph updates after an accepted change.
+Applies incremental graph updates after an accepted change. Receives `acceptedChange.graphDiff` from the [[runtime/review-engine|Review Engine]].
 
 ## Synchronization Contract
 
@@ -29,6 +35,8 @@ Cross-file atomicity via sequential renames is **not** possible — a reader cou
 6. Readers always see a single committed revision via the manifest pointer.
 
 This guarantees all-or-nothing visibility: either the manifest points to a complete version or the previous version.
+
+> [!warning] Atomic manifest publication is critical. Readers always see a consistent snapshot — never a partially-written state. See also [[runtime/graph-retriever|Graph Retriever]] for how snapshots are resolved on the read path.
 
 ### Crash Durability
 

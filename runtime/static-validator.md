@@ -1,6 +1,12 @@
+---
+title: Static Validator
+tags: [runtime, validation, static-analysis, pipeline]
+aliases: [StaticValidator, Phase 12]
+---
+
 # Static Validator (Phase 12)
 
-Before consuming AI review tokens, deterministic tooling validates the implementation.
+Before consuming AI review tokens, deterministic tooling validates the implementation. Runs after [[runtime/execution-engine|Execution Engine]], feeds into [[runtime/review-engine|Review Engine]].
 
 ## Validation Commands
 
@@ -10,7 +16,7 @@ Each command is executed with a deterministic contract:
 |----------|--------------|
 | Node/npm version | As specified in the project's `.nvmrc` or `engines` field in `package.json`; if neither exists, the system-default LTS version |
 | Working directory | Project root (`.`) |
-| Setup step | Before validation runs, a separate setup step executes `npm ci` (using the lockfile) and verifies that `node_modules` is present. This setup step runs outside the validator — the validator itself does not perform installation. If `npm ci` fails or `node_modules` is missing, the setup step reports the error and validation is not attempted. |
+| Setup step | Before validation runs, a separate setup step verifies that `node_modules` is present. If missing, or if dependency files (`package.json`, `package-lock.json`) were modified during execution, it runs `npm ci`. The validator itself does not perform installation. If installation fails, the setup step reports the error and validation is not attempted. |
 | Lockfile | Must be present (`package-lock.json` or equivalent); the setup step uses `npm ci` instead of `npm install` to guarantee reproducible installs |
 | Dependency state | Dependencies are installed (`node_modules` present) by the setup step before validation begins; the validator itself runs no installation logic and rejects execution if `node_modules` is absent |
 | Environment | `NODE_ENV=test` (or equivalent) is explicitly set. Essential system variables (e.g., `PATH`, `HOME`, `USER`, `TMPDIR`) are inherited from the runner environment and preserved. No other environment variables are set unless explicitly required by the project configuration (documented in the project's own config). The validator uses a sanitized baseline: an explicit allowlist of permitted variables that includes essential runner variables, project configuration variables, and standard toolchain/CI variables. Any variable not on the allowlist is removed before validation. |
@@ -28,10 +34,10 @@ Each command is executed with a deterministic contract:
 
 ## Behavior
 
-- If any validation fails, execution returns to the Planning phase for correction (starting a new full pass through the pipeline from Planning forward)
+- If any validation fails, execution returns to the [[runtime/execution-engine|Execution Engine]] phase for correction (starting a new pass through the pipeline from Execution forward). Returning to Planning is only necessary if the plan itself is fundamentally flawed.
 - AI review is not entered on that pass when validation fails
 - This minimizes token consumption by catching errors early
-- Returning to an earlier stage does **not** violate the orchestrator's no-stage-skipping guarantee: every stage is visited in order on each full pass; a failed validation simply initiates a new pass through the pipeline from the re-entry point.
+- Returning to an earlier stage does **not** violate the [[runtime/orchestrator|Orchestrator]]'s no-stage-skipping guarantee: every stage is visited in order on each full pass; a failed validation simply initiates a new pass through the pipeline from the re-entry point.
 
 ## Rules
 

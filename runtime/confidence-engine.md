@@ -1,10 +1,16 @@
+---
+title: Confidence Engine
+tags: [runtime, confidence, scoring, quality]
+aliases: [ConfidenceEngine, Phase 14]
+---
+
 # Confidence Engine (Phase 14)
 
-Every accepted implementation receives quantitative scoring.
+Every accepted implementation receives quantitative scoring. Runs after [[runtime/review-engine|Review Engine]].
 
 ## Scoring Dimensions
 
-Dimensions and weights align with the Review Engine (`ReviewDimension`).
+Dimensions and weights align with the [[runtime/review-engine|Review Engine]] (`ReviewDimension`).
 
 | Category | Weight |
 |----------|--------|
@@ -41,10 +47,10 @@ If all dimensions are N/A, the overall score is defined as `null` and `accepted`
 
 ## Acceptance Threshold
 
-Acceptance follows the canonical gate defined in the Review Engine: `!blocking && overallScore >= 90`.
+Acceptance follows the canonical gate defined in the [[runtime/review-engine|Review Engine]]: `!blocking && (overallScore >= 90 || reviewRequired === false)`.
 
-- `!blocking && overallScore >= 90`: accepted
-- `blocking || overallScore < 90`: improve → review again
+- `!blocking && (overallScore >= 90 || reviewRequired === false)`: accepted
+- `blocking || (overallScore < 90 && reviewRequired !== false)`: improve → review again
 
 ## Scoring Rules
 
@@ -55,6 +61,8 @@ Acceptance follows the canonical gate defined in the Review Engine: `!blocking &
 
 ## Retry Logic
 
-- If `blocking || overallScore < 90` (i.e., not accepted): return to execution with improvement instructions
+- If `blocking || (overallScore < 90 && reviewRequired !== false)` (i.e., not accepted): return to execution with improvement instructions
 - Maximum 3 review cycles per task
 - After 3 failures: escalate to human review
+
+> [!note] Retry state is coordinated by the [[runtime/orchestrator|Orchestrator]]. The confidence score is also recorded in [[tasks/completed|Completed Tasks]].
