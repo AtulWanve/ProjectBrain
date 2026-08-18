@@ -1,8 +1,14 @@
+---
+title: Review Template
+tags: [templates, review, evaluation]
+aliases: [Review Template]
+---
+
 # <Review Type> Review
 
 ## Scope
 
-What is being evaluated.
+What is being evaluated. See concrete review types: [[reviews/architecture-review|Architecture]], [[reviews/code-quality|Code Quality]], [[reviews/documentation-review|Documentation]], [[reviews/performance-review|Performance]], [[reviews/security-review|Security]].
 
 ## Checklist
 
@@ -55,5 +61,7 @@ interface AcceptedChange {
 }
 ```
 
-- `NodeDiff` and `EdgeDiff` types are defined in the Graph Updater contract.
-- `acceptedChange` is `null` when `accepted` is `false` — consumers (Graph Updater, Memory Updater) **must** check for `null` before accessing fields.
+- `NodeDiff` and `EdgeDiff` types are defined in the [[runtime/graph-updater|Graph Updater]] contract.
+- `acceptedChange` is `null` when `accepted` is `false` — consumers ([[runtime/graph-updater|Graph Updater]], [[runtime/memory-updater|Memory Updater]]) **must** check for `null` before accessing fields.
+
+> [!info] The [[runtime/review-engine|Review Engine]] implements the score aggregation and acceptance logic defined in this template. See [[runtime/confidence-engine|Confidence Engine]] for the scoring model.
