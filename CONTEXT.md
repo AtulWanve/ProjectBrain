@@ -16,4 +16,4 @@ The root pipeline logic is governed by the `system/` and `runtime/` directories.
 7. AI Review & Confidence Scoring
 8. Incremental Knowledge Update
 
-For detailed architectural intent, see `Project Brain v2.md`.
+For detailed architectural intent, see [[Project Brain v2.md]].

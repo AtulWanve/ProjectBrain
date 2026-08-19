@@ -58,9 +58,11 @@ The System layer defines **how the AI thinks**, not what the project contains.
 
 system/
 
-system.md  
-planner.md  
-workflow.md
+[[system]]
+
+[[planner]]
+
+[[workflow]]
 
 ### system.md
 
@@ -104,7 +106,7 @@ Responsible for:
 
 ### workflow.md
 
-Defines the execution lifecycle.
+Defines the execution lifecycle. This is an abbreviated overview of the canonical pipeline in [[system/workflow]].
 
 Receive Prompt
 
@@ -122,11 +124,21 @@ Execution
 
 ↓
 
-Review
+Static Validation
 
 ↓
 
+Review
+
+↓ (accepted)
+
 Knowledge Synchronization
+
+↓
+
+Response
+
+Knowledge Synchronization runs only when the review is accepted; rejected results return to Execution or escalate.
 
 No implementation logic should exist inside this file.
 
@@ -138,23 +150,25 @@ Instead of maintaining one massive memory file, Project Brain divides project kn
 
 memory/
 
-overview.md
+[[overview]]
 
-architecture.md
+[[architecture]]
 
-backend.md
+[[backend]]
 
-frontend.md
+[[frontend]]
 
-database.md
+[[database]]
 
-routing.md
+[[routing]]
 
-api.md
+[[api]]
 
-dependencies.md
+[[dependencies]]
 
-patterns.md
+[[patterns]]
+
+[[checkpoints]]
 
 Each file should ideally remain under 300–500 lines.
 
@@ -206,19 +220,25 @@ The Runtime layer acts as the execution engine.
 
 runtime/
 
-context-loader.md
+[[orchestrator]]
 
-execution-engine.md
+[[context-loader]]
 
-graph-retriever.md
+[[execution-engine]]
 
-memory-updater.md
+[[static-validator]]
 
-graph-updater.md
+[[graph-retriever]]
 
-review-engine.md
+[[memory-updater]]
 
-task-classifier.md
+[[graph-updater]]
+
+[[review-engine]]
+
+[[confidence-engine]]
+
+[[task-classifier]]
 
 Each runtime component performs exactly one responsibility.
 
@@ -262,9 +282,9 @@ Context Loader
 
 Loads only:
 
-* frontend.md
+* [[frontend]]
 
-* architecture.md
+* [[architecture]]
 
 * Theme Context
 
@@ -284,19 +304,19 @@ Standards define engineering quality.
 
 standards/
 
-typescript.md
+[[typescript]]
 
-react.md
+[[react]]
 
-nextjs.md
+[[nextjs]]
 
-security.md
+[[security]]
 
-performance.md
+[[performance]]
 
-naming.md
+[[naming]]
 
-documentation.md
+[[documentation]]
 
 Review agents reference standards rather than project memory.
 
@@ -308,15 +328,15 @@ This separates implementation knowledge from engineering rules.
 
 reviews/
 
-architecture-review.md
+[[architecture-review]]
 
-performance-review.md
+[[performance-review]]
 
-security-review.md
+[[security-review]]
 
-code-quality.md
+[[code-quality]]
 
-documentation-review.md
+[[documentation-review]]
 
 Each reviewer focuses on one engineering discipline.
 
@@ -356,13 +376,13 @@ Recommendations:
 
 tasks/
 
-active.md
+[[active]]
 
-completed.md
+[[completed]]
 
-failed.md
+[[failed]]
 
-changelog.md
+[[changelog]]
 
 Each completed task appends:
 
@@ -532,7 +552,7 @@ AI review is skipped.
 
 This minimizes token consumption.
 
-A task is given a finite number of validation attempts. Until that limit is reached, retries follow the same path above. Once the limit is exhausted, retrying stops and the task is recorded in tasks/failed.md together with the diagnostic details.
+A task is given a finite number of validation attempts. Until that limit is reached, retries follow the same path above. Once the limit is exhausted, retrying stops and the task is recorded in [[tasks/failed]] together with the diagnostic details.
 
 ---
 
@@ -594,7 +614,7 @@ Review Again
 
 This prevents unnecessary review loops.
 
-A task may cycle through the review loop only a finite number of times. Until that limit is reached, the Improve → Review Again flow above is preserved. Once the limit is exhausted, improvement stops and the task is recorded in tasks/failed.md together with the review diagnostics.
+A task may cycle through the review loop only a finite number of times. Until that limit is reached, the Improve → Review Again flow above is preserved. Once the limit is exhausted, improvement stops and the task is recorded in [[tasks/failed]] together with the review diagnostics.
 
 ---
 
@@ -606,15 +626,15 @@ Only affected knowledge is updated.
 
 Possible updates include:
 
-* overview.md
+* [[overview]]
 
-* architecture.md
+* [[architecture]]
 
-* routing.md
+* [[routing]]
 
-* api.md
+* [[api]]
 
-* dependencies.md
+* [[dependencies]]
 
 * task history
 
@@ -628,13 +648,13 @@ Only incremental changes are applied.
 
 To ensure system integrity, Knowledge Synchronization follows a recoverable commit workflow:
 
-1. **Checkpointing**: The system creates a synchronization checkpoint in `memory/checkpoints.md` before starting updates, recording the pending updates.
+1. **Checkpointing**: The system creates a synchronization checkpoint in [[memory/checkpoints]] before starting updates, recording the pending updates.
 2. **Execution Ordering**: Updates occur in a strict order:
-   - Memory updates (via `memory-updater.md`)
-   - Graph updates (via `graph-updater.md`)
+   - Memory updates (via [[memory-updater]])
+   - Graph updates (via [[graph-updater]])
    - Task history updates
 3. **Idempotency**: Both the memory and graph updaters implement idempotent retry behaviors, allowing partial updates to be safely replayed.
-4. **Reconciliation**: If a failure occurs during synchronization, the system must read `memory/checkpoints.md` to resume or reconcile the incomplete updates.
+4. **Reconciliation**: If a failure occurs during synchronization, the system must read [[memory/checkpoints]] to resume or reconcile the incomplete updates.
 5. **Completion**: A task cannot be marked complete in task history until the synchronization checkpoint is fully resolved and the updates are successful.
 
 ---
@@ -671,13 +691,13 @@ The remainder of the graph remains unchanged.
 
 cache/
 
-recent-context.md
+[[recent-context]]
 
-last-plan.md
+[[last-plan]]
 
-recent-files.md
+[[recent-files]]
 
-recent-review.md
+[[recent-review]]
 
 Purpose:
 
@@ -698,6 +718,8 @@ The Runtime loads the recent authentication context directly from cache instead 
 ---
 
 # Phase 18 — Complete Prompt Lifecycle
+
+Abbreviated overview of the complete prompt lifecycle. The canonical deterministic pipeline with retry, escalation, and error handling lives in [[system/workflow]].
 
 Receive Prompt
 
@@ -762,6 +784,8 @@ Append Task History
 ↓
 
 Return Final Response
+
+Knowledge Synchronization runs only when the review is accepted; rejected reviews return to Execution or escalate.
 
 ---
 

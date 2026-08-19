@@ -1,13 +1,13 @@
 # Project Brain References
 
 ## Internal Documentation
-- **Core Orchestration**: `runtime/orchestrator.md`, `runtime/prompt-lifecycle.md`
-- **Memory Standards**: `standards/documentation.md`
-- **Execution Engine**: `runtime/execution-engine.md`
-- **Graph Updates**: `runtime/graph-updater.md`
-- **Templates**: See `templates/` for memory and task scaffolding.
+- **Core Orchestration**: [[runtime/orchestrator|Orchestrator]], [[runtime/prompt-lifecycle|Prompt Lifecycle]]
+- **Memory Standards**: [[standards/documentation|Documentation Standards]]
+- **Execution Engine**: [[runtime/execution-engine|Execution Engine]]
+- **Graph Updates**: [[runtime/graph-updater|Graph Updater]]
+- **Templates**: See [[templates/memory-template|Memory Template]] and [[templates/task-entry-template|Task Entry Template]] for memory and task scaffolding.
 
 ## Key Blueprint Patterns
 - **ChatIndex Pattern**: Used for session memory in long-running tasks.
 - **PageIndex Pattern**: Multi-resolution tree retrieval for context loading.
-- See `memory/vectifyai-blueprints.md` for specific retrieval/memory implementations.
+- See [[memory/vectifyai-blueprints|VectifyAI Blueprints]] for specific retrieval/memory implementations.

@@ -7,14 +7,16 @@ Project Brain is an AI-native engineering runtime that eliminates repeated codeb
 project-brain/
 ├── system/       # Core pipeline and orchestrator rules
 ├── graph/        # Structural source of truth (JSON graphs)
-├── memory/       # Modular knowledge files (architecture, frontend, checkpoints.md, etc.)
+├── memory/       # Modular knowledge files
 ├── tasks/        # Task history and tracking
 ├── standards/    # Engineering quality rules
 ├── reviews/      # Review checklists and scoring
 ├── templates/    # Markdown templates for records
-├── runtime/      # Execution engine components (including graph-updater.md and memory-updater.md)
+├── runtime/      # Execution engine components
 └── cache/        # Optimization caches
 ```
+
+Key knowledge files: [[memory/architecture|Architecture]], [[memory/frontend|Frontend]], [[memory/checkpoints|Checkpoints]]. Runtime engine components: [[runtime/graph-updater|Graph Updater]], [[runtime/memory-updater|Memory Updater]].
 
 ## Naming Conventions
 - **Files and Directories**: `kebab-case` for utility files, config files, and directories. `PascalCase` for components/classes. `camelCase` for data/hooks.
