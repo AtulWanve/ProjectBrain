@@ -29,4 +29,4 @@ Records all successfully completed engineering tasks. See also [[tasks/active|Ac
 
 `No completed tasks yet.` is the canonical empty-state marker. It is non-record content (no leading `-` or pipe separators) and **must** be ignored by parsers rather than treated as a task entry.
 
-> [!info] Tasks are marked completed when they pass the acceptance gate in the [[runtime/confidence-engine|Confidence Engine]]. The score is the `overallScore` from the [[runtime/review-engine|Review Engine]].
+> [!info] Tasks are marked completed when they pass the acceptance gate in the [[runtime/review-engine|Review Engine]], which implements the score aggregation and acceptance logic; the [[runtime/confidence-engine|Confidence Engine]] provides the scoring model.
