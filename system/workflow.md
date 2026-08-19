@@ -20,10 +20,10 @@ Execution              ← [[runtime/execution-engine|Execution Engine]]
 Static Validation      ← [[runtime/static-validator|Static Validator]]
 ↓
 Review                 ← [[runtime/review-engine|Review Engine]] + [[runtime/confidence-engine|Confidence Engine]]
-↓
+↓ (accepted)
 Knowledge Sync         ← [[runtime/memory-updater|Memory Updater]] + [[runtime/graph-updater|Graph Updater]]
 ↓
 Response
 ```
 
-> [!info] No implementation logic should exist inside this file. It is a high-level map. See the [[runtime/orchestrator|Orchestrator]] for the full deterministic pipeline with retry, escalation, and error handling.
+> [!info] Knowledge Sync runs only when the review is accepted; rejected results bypass it and return to Execution or escalate. No implementation logic should exist inside this file. It is a high-level map. See the [[runtime/orchestrator|Orchestrator]] for the full deterministic pipeline with retry, escalation, and error handling.
