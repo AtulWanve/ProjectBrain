@@ -1,3 +1,9 @@
+---
+title: Performance Standards
+tags: [standards, performance, optimization]
+aliases: [Performance, Optimization]
+---
+
 # Performance Standards
 
 ## Bundle Size
@@ -9,7 +15,7 @@
 
 ## Rendering
 
-- Use server components by default in Next.js
+- Use server components by default in [[standards/nextjs|Next.js]]
 - Stream responses with `loading.tsx` and Suspense boundaries
 - Memoize expensive computations
 - Avoid unnecessary re-renders
@@ -27,3 +33,5 @@
 - Use database-side pagination (LIMIT/OFFSET or cursor-based)
 - N+1 query detection and prevention
 - Connection pooling for production
+
+> [!seealso] Also see [[standards/react|React Standards]] for memoization details and [[reviews/performance-review|Performance Review]] for the review checklist.

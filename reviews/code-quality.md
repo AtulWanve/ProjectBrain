@@ -1,15 +1,21 @@
+---
+title: Code Quality Review
+tags: [review, code-quality, maintainability]
+aliases: [Code Quality Review]
+---
+
 # Code Quality Review
 
 ## Scope
 
-Evaluates code quality, maintainability, and adherence to project standards.
+Evaluates code quality, maintainability, and adherence to project standards. See also [[reviews/architecture-review|Architecture Review]], [[reviews/documentation-review|Documentation Review]], [[reviews/performance-review|Performance Review]], and [[reviews/security-review|Security Review]].
 
 ## Checklist
 
-- [ ] Follows TypeScript/React/Next.js standards
+- [ ] Follows [[standards/typescript|TypeScript]]/[[standards/react|React]]/[[standards/nextjs|Next.js]] standards
 - [ ] Proper error handling (no swallowed errors)
 - [ ] No dead code or commented-out code
-- [ ] Consistent naming conventions
+- [ ] Consistent naming conventions (see [[standards/naming|Naming Standards]])
 - [ ] Functions are focused (single responsibility)
 - [ ] No excessive complexity (consider extracting)
 - [ ] Proper typing (no `any` abuse)

@@ -1,3 +1,9 @@
+---
+title: Naming Standards
+tags: [standards, naming, conventions]
+aliases: [Naming Conventions]
+---
+
 # Naming Standards
 
 ## Files and Directories
@@ -20,3 +26,5 @@
 - Use Tailwind utility classes when available
 - Component-scoped styles for custom CSS
 - Avoid global class name collisions
+
+> [!seealso] Also see [[standards/typescript|TypeScript Standards]] for type naming and [[standards/react|React Standards]] for component structure.

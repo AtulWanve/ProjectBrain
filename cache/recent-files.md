@@ -1,6 +1,12 @@
+---
+title: Recent Files
+tags: [cache, files, tracking]
+aliases: [Recent Files Cache]
+---
+
 # Recent Files
 
-Tracks recently modified files for context continuity.
+Tracks recently modified files for context continuity. Updated by [[runtime/execution-engine|Execution Engine]].
 
 ## Format
 

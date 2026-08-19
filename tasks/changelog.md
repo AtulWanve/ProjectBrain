@@ -1,6 +1,12 @@
+---
+title: Changelog
+tags: [tasks, changelog, history]
+aliases: [Changelog]
+---
+
 # Changelog
 
-Records all significant changes to the project.
+Records all significant changes to the project. See also [[tasks/active|Active Tasks]], [[tasks/completed|Completed Tasks]], and [[tasks/failed|Failed Tasks]].
 
 ## Format
 

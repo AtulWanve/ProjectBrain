@@ -1,8 +1,14 @@
+---
+title: Security Review
+tags: [review, security, vulnerabilities, audit]
+aliases: [Security Review]
+---
+
 # Security Review
 
 ## Scope
 
-Evaluates the implementation for security vulnerabilities.
+Evaluates the implementation for security vulnerabilities. See [[standards/security|Security Standards]] for the guidelines this review checks against.
 
 ## Checklist
 
@@ -59,3 +65,5 @@ Each vulnerability is an object with the following fields, aligned to the canoni
 - Severity level for each
 - Recommendations
 - `Blocking: boolean` (derived from severity-to-blocking rules above)
+
+> [!warning] Security has a higher bar than other reviews (threshold < 80 vs. < 60). Critical findings override the aggregate score entirely. Results feed into the [[runtime/review-engine|Review Engine]]'s "security" dimension.

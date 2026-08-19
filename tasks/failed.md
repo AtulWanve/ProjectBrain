@@ -1,6 +1,12 @@
+---
+title: Failed Tasks
+tags: [tasks, failed, history]
+aliases: [Failed Tasks]
+---
+
 # Failed Tasks
 
-Records tasks that were rejected or abandoned.
+Records tasks that were rejected or abandoned. See also [[tasks/active|Active Tasks]], [[tasks/completed|Completed Tasks]], and [[tasks/changelog|Changelog]].
 
 ## Format
 
@@ -35,3 +41,5 @@ Consumers **must** follow this order to preserve literal backslashes, pipes, and
 ### Empty State
 
 `No failed tasks.` is the canonical empty-state marker. It is non-record content (no leading `-` or pipe separators) and **must** be ignored by parsers rather than treated as a task entry.
+
+> [!info] Tasks fail when they exceed the max retry count (3) in the [[runtime/orchestrator|Orchestrator]] or are escalated to human review. See [[runtime/confidence-engine|Confidence Engine]] for retry logic.

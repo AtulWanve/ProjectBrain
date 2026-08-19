@@ -1,13 +1,19 @@
+---
+title: Memory Template
+tags: [templates, memory, records]
+aliases: [Memory Record Template]
+---
+
 # Memory Record
 
-Structured record appended to the memory file after an accepted change.
+Structured record appended to the memory file after an accepted change. Consumed by the [[runtime/memory-updater|Memory Updater]].
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
 | `memoryKey` | `string` (UUID) | Yes | Stable unique identifier for this memory record |
-| `sourceTaskId` | `string` (UUIDv4) | Yes | Planner-assigned UUIDv4 for the task that produced this memory. This is the canonical deduplication identifier — the Memory Updater writes it as `<!-- taskId: <sourceTaskId> -->` in the record and scans for that marker when checking for duplicates. Retries use this same field for idempotency. |
+| `sourceTaskId` | `string` (UUIDv4) | Yes | Planner-assigned UUIDv4 for the task that produced this memory. This is the canonical deduplication identifier — the [[runtime/memory-updater|Memory Updater]] writes it as `<!-- taskId: <sourceTaskId> -->` in the record and scans for that marker when checking for duplicates. Retries use this same field for idempotency. |
 | `timestamp` | `string` (ISO-8601 UTC) | Yes | When the record was created |
-| `confidence` | `number` (0–100) | Yes | Confidence score from Confidence Engine |
+| `confidence` | `number` (0–100) | Yes | Confidence score from [[runtime/confidence-engine|Confidence Engine]] |
 | `affectedGraphNodes` | `string[]` | Yes | IDs of graph nodes affected by the change |
 | `content` | `string` | Yes | Free-form memory content |
 | `deduplicationKey` | `string` | No | Optional secondary hash or logical key for additional deduplication beyond `sourceTaskId`. The primary deduplication mechanism is the `<!-- taskId: <sourceTaskId> -->` marker. If `deduplicationKey` is present, the updater checks for it as a secondary constraint after the primary taskId check passes. |
@@ -30,9 +36,11 @@ Record content in markdown...
 
 The `---` delimiters separate YAML front matter (metadata) from the markdown body. Metadata fields (`memoryKey`, `sourceTaskId`, `timestamp`, `confidence`, `affectedGraphNodes`, `deduplicationKey`) are in the YAML block. The `content` field is **not** a YAML key — it is the entire markdown body after the closing `---`. Parsers **must** read the body after the second `---` as the record content.
 
+> [!warning] This is a per-record frontmatter, not the file-level frontmatter. The `---` blocks inside records are nested YAML — parsers must handle multiple records per file, each with its own `---` delimiters.
+
 ## Deduplication (Lock-Guarded Protocol)
 
-The Memory Updater uses a single normative concurrency protocol:
+The [[runtime/memory-updater|Memory Updater]] uses a single normative concurrency protocol:
 
 1. **Acquire lock**: Obtain an advisory file lock on `memory/.memory-lock` (via `flock` / `LockFile`).
 2. **Timeout**: The lock acquisition has a 5-second timeout. If the lock cannot be acquired within this period, fail with `ConcurrentUpdateError`.
@@ -47,4 +55,4 @@ When `deduplicationKey` is set (in addition to `sourceTaskId`), the updater chec
 
 ### Graph Synchronization
 
-Each record's `affectedGraphNodes` links back to the graph state, enabling cross-referencing between memory and graph updater contracts.
+Each record's `affectedGraphNodes` links back to the graph state, enabling cross-referencing between memory and graph updater contracts. See [[runtime/graph-updater|Graph Updater]] for the graph schema.

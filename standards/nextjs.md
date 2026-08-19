@@ -1,3 +1,9 @@
+---
+title: Next.js Standards
+tags: [standards, nextjs, app-router, server-actions]
+aliases: [Next.js, App Router]
+---
+
 # Next.js Standards
 
 ## Routing
@@ -22,7 +28,7 @@
 - Define with `"use server"` directive
 - **Authenticate** the caller before performing any side effects (verify session/token)
 - **Authorize** the action at the resource level (verify the caller has permission for the specific operation)
-- **Apply CSRF protections** suitable for the action type (see Security Standards for guidance)
+- **Apply CSRF protections** suitable for the action type (see [[standards/security|Security Standards]] for guidance)
 - Validate inputs with Zod or similar schema library
 - Handle errors gracefully with `try/catch`
 - Revalidate affected paths with `revalidatePath` or `revalidateTag`
