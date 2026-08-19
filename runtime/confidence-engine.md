@@ -47,10 +47,10 @@ If all dimensions are N/A, the overall score is defined as `null` and `accepted`
 
 ## Acceptance Threshold
 
-Acceptance follows the canonical gate defined in the [[runtime/review-engine|Review Engine]]: `!blocking && (overallScore >= 90 || reviewRequired === false)`.
+Acceptance follows the canonical gate defined in the [[runtime/review-engine|Review Engine]], guarded so a `null` score (all-N/A) is never accepted: `overallScore !== null && !blocking && (overallScore >= 90 || reviewRequired === false)`.
 
-- `!blocking && (overallScore >= 90 || reviewRequired === false)`: accepted
-- `blocking || (overallScore < 90 && reviewRequired !== false)`: improve → review again
+- `overallScore !== null && !blocking && (overallScore >= 90 || reviewRequired === false)`: accepted
+- `overallScore === null || blocking || (overallScore < 90 && reviewRequired !== false)`: improve → review again
 
 ## Scoring Rules
 
@@ -61,7 +61,7 @@ Acceptance follows the canonical gate defined in the [[runtime/review-engine|Rev
 
 ## Retry Logic
 
-- If `blocking || (overallScore < 90 && reviewRequired !== false)` (i.e., not accepted): return to execution with improvement instructions
+- If `overallScore === null || blocking || (overallScore < 90 && reviewRequired !== false)` (i.e., not accepted): return to execution with improvement instructions
 - Maximum 3 review cycles per task
 - After 3 failures: escalate to human review
 

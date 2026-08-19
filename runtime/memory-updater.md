@@ -1,59 +1,10 @@
----
-title: Memory Updater
-tags: [runtime, memory, persistence, updates]
-aliases: [MemoryUpdater]
----
-
 # Memory Updater
 
-Applies incremental knowledge updates after an accepted change. Receives `acceptedChange.memoryAppend` from the [[runtime/review-engine|Review Engine]].
+The Memory Updater is responsible for applying incremental updates to the modular memory files in `memory/`.
 
-## Safe Append Semantics
+## Idempotency Contract
 
-### Stable Unique Identifier
-
-Each task result carries a stable `taskId: string` (UUIDv4) assigned by the [[system/planner|Planner]]. This identifier is preserved across retries — the same task always produces the same `taskId`.
-
-### Deduplication (Lock-Guarded)
-
-The entire deduplication-and-replace sequence must be protected by `.memory-lock`:
-
-1. Acquire `memory/.memory-lock` (advisory lock via `flock` / `LockFile`, 5-second timeout).
-2. Scan the target `memory/*.md` file for an existing `<!-- taskId: <id> -->` marker.
-3. If **found**: release lock and skip (idempotent retry).
-4. If **not found**: proceed to Atomic Writes below, then release lock **only after** the rename succeeds.
-5. If any step fails, release lock and propagate the error.
-
-Holding the lock across scan → write → rename prevents concurrent workers from interleaving and creating duplicate or lost entries.
-
-> [!tip] The record format is defined in [[templates/memory-template|Memory Template]]. Each record uses YAML frontmatter with a `<!-- taskId: -->` HTML comment marker for deduplication.
-
-### Atomic Writes
-
-1. Create the temp file (`*.tmp`) on the **same filesystem** as the target file — cross-filesystem moves are not atomic.
-2. Write new content to the temp file.
-3. Rename (replace) the temp file over the original using an atomic rename primitive (`rename()` / `MovFileEx`).
-4. If write or rename fails, the original file is unchanged.
-5. **Operation-time guarantee only**: This sequence prevents partial updates from concurrent or failed operations within the lifetime of the process. Durability guarantees are platform- and filesystem-specific:
-
-   - **POSIX**: `rename()` is atomic on the same filesystem. Calling `fsync` on the temp file before rename and on the parent directory after rename provides best-effort crash durability. However, `fsync` on a directory does **not** universally guarantee directory-entry durability across all POSIX filesystems (ext4 with default options generally provides it; FUSE, NFS, and some journaling modes may not).
-   - **Windows**: `MoveFileEx` with `MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH` provides atomic replacement on NTFS. Without `MOVEFILE_WRITE_THROUGH`, the system may fall back to a copy+delete sequence. Calling `FlushFileBuffers` on the temp file before rename and on the parent directory handle after rename is required for power-loss recovery on NTFS, but directory `FlushFileBuffers` is not supported on all Windows configurations and may be a no-op on non-NTFS volumes (FAT32, exFAT, network shares).
-   - **Failure behavior**: If the pre-rename flush or the post-rename parent-directory flush is unavailable or fails, the operation degrades to an operation-time guarantee only — the original file remains unchanged on failure, but power-loss recovery is not assured.
-   - **Testing requirement**: Before guaranteeing unchanged originals or power-loss recovery in production, implement and pass crash/failure tests that simulate power loss at each step of the sequence (after temp write, after flush, after rename, after parent-dir flush). See ["Operation-time guarantee only"](#operation-time-guarantee-only) above.
-
-## Incremental Tree Updates (Blueprint)
-
-Inspired by [ChatIndex](https://github.com/VectifyAI/ChatIndex), memory updates for long-running agent sessions should use **incremental tree indexing**:
-
-- **Topic detection**: LLM detects topic switches in new content and creates new tree nodes
-- **Temporal ordering**: New nodes can only be children of the current node or its ancestors
-- **Bounded fan-out**: Max children per node keeps tree shallow and retrieval efficient
-- **Lossless preservation**: Raw conversation/data always accessible at leaf nodes; internal nodes store topic summaries
-
-See [[memory/vectifyai-blueprints]] for the full pattern specification.
-
-### Conflict Handling for Concurrent Updates
-
-- The `.memory-lock` serializes all write operations (see Deduplication above).
-- If the lock cannot be acquired within 5 seconds, fail with `ConcurrentUpdateError`.
-- Locked operations prevent duplicate entries and data loss.
+- The memory updater operates idempotently by using task IDs and content hashes as update anchors.
+- Before applying an update, it checks if the exact same change has already been applied for the given task.
+- Partial updates are designed so that re-applying them over a partially updated file results in the same final state.
+- Updates are strictly incremental.
