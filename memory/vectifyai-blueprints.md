@@ -18,7 +18,7 @@ Four blueprints extracted, ordered by relevance to ProjectBrain:
 
 ## 1. PageIndex — Reasoning-Based Tree Retrieval
 
-**Source:** [VectifyAI/PageIndex](https://github.com/VectifyAI/PageIndex) (34,038★, MIT, Python)
+**Source:** [VectifyAI/PageIndex](https://github.com/VectifyAI/PageIndex) (MIT, Python)
 **Target:** Graph Retriever / Context Loader
 
 ### Core Pattern: Vectorless RAG via Hierarchical Tree Search
@@ -65,7 +65,7 @@ async function reasonBasedRetrieve(
 
 ### Record: 98.7% on FinanceBench
 
-PageIndex (via Mafin 2.5) achieved 98.7% accuracy on FinanceBench, vastly outperforming vector RAG on professional document QA. This validates reasoning-based retrieval over similarity search for complex documents.
+PageIndex (via [Mafin 2.5](https://github.com/VectifyAI/Mafin2.5-FinanceBench)) achieved 98.7% accuracy on FinanceBench, vastly outperforming vector RAG on professional document QA. The evaluation stores all documents in a single database and defers ambiguous or multi-valid-answer questions to expert human review. This record is specific to FinanceBench: its ground truth can itself be ambiguous, and the set largely tests single-document retrieval rather than multi-document reasoning, so it does not by itself validate tree search for all complex documents.
 
 ### Integration Points
 
@@ -199,7 +199,7 @@ ProjectBrain already has a similar pattern (memory/, graph/, reviews/, standards
 - **Concept page synthesis** — cross-reference multiple documents into unified concept pages (cf. ProjectBrain's memory/ files)
 - **Entity tracking** — auto-extract and maintain people, orgs, places from engineering context
 - **Skill distillation** — `openkb skill new` pattern could inform how ProjectBrain exports reusable agent skills
-- **Obsidian integration** — wiki format is already compatible with the Obsidian vault at `C:\Users\Atul\Documents\Obsidian Vault\ProjectBrain`
+- **Obsidian integration** — wiki format is already compatible with the Obsidian vault configured for this project
 
 ### Integration Points
 
