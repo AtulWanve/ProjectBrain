@@ -33,7 +33,8 @@ Confidence Scoring       ← [[runtime/confidence-engine|Confidence Engine]]
 ├── No
 │   ↓
 │   Retry count < max (default 3) ?
-│   ├── Yes → increment retry count, return to Execution with improvement instructions
+│   ├── Yes → increment retry count, re-enter at Execution with improvement instructions
+│   │         and proceed through the remaining stages in order (never skip stages)
 │   └── No  → Escalate to human review, return escalation response (no further retries)
 │
 └── Yes
@@ -55,4 +56,4 @@ Confidence Scoring       ← [[runtime/confidence-engine|Confidence Engine]]
 - Knowledge grows incrementally with every completed task
 - Token consumption is minimized by early validation
 
-> [!info] This lifecycle is enforced by the [[runtime/orchestrator|Orchestrator]]. Each runtime component runs in strict order — no stage-skipping is permitted even on retries.
+> [!info] This lifecycle is enforced by the [[runtime/orchestrator|Orchestrator]]. Each runtime component runs in strict order — retries always re-enter at Execution and proceed through the remaining stages in order; no stage-skipping is permitted.

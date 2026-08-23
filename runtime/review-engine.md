@@ -19,6 +19,7 @@ Returns a `ReviewResult` object:
 | `overallScore` | `number` (0–100) | Aggregate quality score |
 | `scores` | `ReviewDimension[]` | Per-category scores |
 | `blocking` | `boolean` | If true, the change is rejected |
+| `reviewRequired` | `boolean` | Propagated unchanged from [[runtime/task-classifier\|Task Classification]]. Required to compute the `accepted` derivation below; consumers **must** use this propagated value when recomputing `accepted` |
 | `accepted` | `boolean` | Derived: `!blocking && (overallScore >= 90 || reviewRequired === false)` (canonical threshold, consistent with [[runtime/confidence-engine|Confidence Engine]]) |
 | `acceptedChange` | `AcceptedChange \| null` | Approved change payload. **Must** be non-null when `accepted` is `true`; **must** be `null` when `accepted` is `false` (i.e., when rejected). Consumers ([[runtime/graph-updater|Graph Updater]], [[runtime/memory-updater|Memory Updater]]) **must** validate this invariant. |
 | `feedback` | `string` | Human-readable review summary |
@@ -61,6 +62,6 @@ The `scores` array **must** contain exactly one entry for each of the eight cano
   1. **Recompute `overallScore`** from the weighted `scores` array using `Σ(score_i × weight_i) / Σ(weight_i)`. Reject the result if the recomputed value differs from the provided `overallScore` by more than floating-point tolerance (1e-9).
    2. **Validate ranges and category set**: Every `score` in `scores` must be 0–100, every `weight` must be 0.0–1.0, and weights must sum to exactly 1 (within 1e-9 tolerance). The `scores` array must contain exactly one entry for each of the eight canonical categories (`"architecture"`, `"security"`, `"maintainability"`, `"readability"`, `"intent"`, `"side-effects"`, `"scalability"`, `"regression"`) — no duplicates, no omissions. The `overallScore` must be 0–100 after recomputation.
   3. **Validate blocking thresholds**: Set `blocking = true` if any single `score` < 40 or if `overallScore` < 50. Reject if the provided `blocking` field contradicts this derivation.
-  4. **Recompute `accepted`** as `!blocking && (overallScore >= 90 || reviewRequired === false)`. Reject if the provided `accepted` field contradicts this derivation.
+  4. **Recompute `accepted`** as `!blocking && (overallScore >= 90 || reviewRequired === false)`, using the propagated `reviewRequired` field. Reject if `reviewRequired` is missing or non-boolean, or if the provided `accepted` field contradicts this derivation.
   5. **Enforce the acceptedChange invariant**: `acceptedChange` must be non-null when `accepted` is `true` and `null` when `accepted` is `false`. Reject malformed results before processing.
 - If any validation fails, the consumer must treat the result as invalid and not apply any changes.
